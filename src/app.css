@@ -91,11 +91,9 @@ button:focus-visible {
   filter: drop-shadow(0 0 2rem rgba(0, 0, 0, 0.2));
 }
 
-.note-resizebar {
-  /*background-color: #7d7c7c;*/
-}
-
 .note-toolbar {
+  display: flex;
+  justify-content: flex-start;
   background-color: #1f1f1f;
   border-top-left-radius: 7px;
   border-top-right-radius: 7px;

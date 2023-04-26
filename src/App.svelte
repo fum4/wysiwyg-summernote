@@ -33,7 +33,7 @@
 
 <main>
   <img
-    src="/logo.png"
+    src="/logo.webp"
     alt="Rinkt logo"
     class="logo"
   />
