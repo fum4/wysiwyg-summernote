@@ -107,3 +107,21 @@ button:focus-visible {
 .logo {
   margin-bottom: 50px;
 }
+
+.input-group {
+  min-width: 718px;
+  width: fit-content;
+  padding: 2px;
+}
+
+button[type="submit"] {
+  height: 38px;
+  width: 100px;
+  position: absolute;
+  bottom: 21px;
+  right: 10px;
+}
+
+main {
+  position: relative;
+}
