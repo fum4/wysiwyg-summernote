@@ -23,21 +23,20 @@
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
 
-    img.crossOrigin = 'Anonymous';
+    img.crossOrigin = 'anonymous';
     canvas.width = img.width;
     canvas.height = img.height;
+
     ctx.drawImage(img, 0, 0);
 
-    const dataURL = canvas.toDataURL('image/png');
-
-    img.src = dataURL.replace(/^data:image\/?[A-z]*;base64,/);
+    img.src = canvas.toDataURL('image/png');
   }
 
   function convertAllImagesToBase64() {
     const images = getEditorHTMLNode().querySelectorAll('img');
 
     images.forEach((img) => {
-      if (img.src.startsWith('http')) {
+      if (img.src.startsWith('http') || img.src.startsWith('cid:')) {
         convertImageToBase64(img);
       }
     });
@@ -95,7 +94,7 @@
 
   function exportAsHTML(ev) {
     ev.preventDefault();
-    // convertAllImagesToBase64();
+    convertAllImagesToBase64();
 
     const content = getEditorContent();
 
@@ -105,7 +104,7 @@
       // TODO
       console.log('Saving...', sanitizedContent);
 
-      clearEditor();
+      // clearEditor();
     }
   }
 

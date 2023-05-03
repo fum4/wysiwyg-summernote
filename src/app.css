@@ -127,6 +127,11 @@ button:focus-visible {
   gap: 10px;
 }
 
+button.reset-button {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
 main {
   position: relative;
 }
