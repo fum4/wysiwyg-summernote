@@ -114,12 +114,17 @@ button:focus-visible {
   padding: 2px;
 }
 
-button[type="submit"] {
+.action-buttons > button {
   height: 38px;
   width: 100px;
+}
+
+.action-buttons {
   position: absolute;
+  display: flex;
   bottom: 21px;
   right: 10px;
+  gap: 10px;
 }
 
 main {

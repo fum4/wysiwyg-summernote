@@ -4,6 +4,21 @@
 
   const defaultContent = '<div style="text-align: left;"><br></div>';
 
+  function showHelperTooltip() {
+    window.$('.reset-button').tooltip('enable');
+
+    if (!localStorage.getItem('hideTextEditorResetTooltip')) {
+      setTimeout(() => {
+        window.$('.reset-button').tooltip('show');
+
+        setTimeout(() => {
+          window.$('.reset-button').tooltip('hide');
+          localStorage.setItem('hideTextEditorResetTooltip', 'true');
+        }, 7000);
+      }, 500); // Need to wait for layout shifts to stabilize
+    }
+  }
+
   function convertImageToBase64(img: HTMLImageElement) {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
@@ -29,15 +44,15 @@
   }
 
   function saveDraft() {
-    localStorage.setItem('draft', getEditorContent());
+    localStorage.setItem('textEditorDraft', getEditorContent());
   }
 
   function clearDraft() {
-    localStorage.removeItem('draft');
+    localStorage.removeItem('textEditorDraft');
   }
 
   function getDraft() {
-    return localStorage.getItem('draft');
+    return localStorage.getItem('textEditorDraft');
   }
 
   function getEditorContent() {
@@ -46,6 +61,12 @@
 
   function getEditorHTMLNode(): HTMLDivElement {
     return document.querySelector('[contenteditable="true"]');
+  }
+
+  function clearEditor() {
+    getEditorHTMLNode().innerHTML = defaultContent;
+    getEditorHTMLNode().focus();
+    clearDraft();
   }
 
   function initializeEditor() {
@@ -81,17 +102,17 @@
     if (content) {
       const sanitizedContent = DOMPurify.sanitize(content);
 
-      // TODO: Save export
+      // TODO
       console.log('Saving...', sanitizedContent);
 
-      getEditorHTMLNode().innerHTML = defaultContent;
-      getEditorHTMLNode().focus();
-      clearDraft();
+      clearEditor();
     }
   }
 
   onMount(() => {
     initializeEditor();
+    showHelperTooltip();
+
     window.onbeforeunload = saveDraft;
   });
 
@@ -109,11 +130,25 @@
 
   <form method="post" on:submit={exportAsHTML}>
     <textarea id="summernote" name="editordata"></textarea>
-    <button
-      type="submit"
-      class="btn btn-primary ml-1"
-    >
-      OK
-    </button>
+    <div class="action-buttons">
+      <button
+        type="button"
+        class="reset-button btn btn-outline-secondary"
+        data-toggle="tooltip"
+        data-offset="0,5px"
+        data-placement="left"
+        data-fallbackPlacement="top"
+        title="If you encounter difficulties try resetting the editor"
+        on:click={clearEditor}
+      >
+        Reset
+      </button>
+      <button
+        type="submit"
+        class="submit-button btn btn-primary"
+      >
+        OK
+      </button>
+    </div>
   </form>
 </main>
