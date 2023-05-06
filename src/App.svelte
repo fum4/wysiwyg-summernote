@@ -43,15 +43,23 @@
   // }
 
   function saveDraft() {
-    localStorage.setItem('textEditorDraft', getEditorContent());
+    try {
+      localStorage.setItem('textEditorDraft', getEditorContent());
+    } catch(e) {}
   }
 
   function clearDraft() {
-    localStorage.removeItem('textEditorDraft');
+    try {
+      localStorage.removeItem('textEditorDraft');
+    } catch(e) {}
   }
 
   function getDraft() {
-    return localStorage.getItem('textEditorDraft');
+    try {
+      return localStorage.getItem('textEditorDraft');
+    } catch(e) {
+      return null;
+    }
   }
 
   function getEditorContent() {
