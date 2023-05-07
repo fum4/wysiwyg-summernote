@@ -109,7 +109,7 @@
     <div class="bottom-section">
       <div class="error">
         {#if saveError}
-          <p class="mb-0 text-danger">An error occurred while saving the document</p>
+          <p class="mb-0 px-2 rounded text-black bg-warning">An error occurred while saving the document</p>
         {/if}
       </div>
       <div class="action-buttons">

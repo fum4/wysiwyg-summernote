@@ -1,10 +1,8 @@
-import $ from 'jquery';
 import { getContentFromHost } from './cefUtils';
 
 const defaultEditorContent = '<div style="text-align: left;"><br /></div>';
 
 export function summernote(...args) {
-  // Summernote won't work if not using `window.$`
   // @ts-ignore
   return window.$('#summernote').summernote(...args);
 }
@@ -68,16 +66,18 @@ export function clearEditor() {
 
 export function showEditorTooltip() {
   try {
+    // @ts-ignore
+    const resetButton = window.$('.reset-button');
     const tooltipAlreadyDisplayed = localStorage.getItem('hideTextEditorResetTooltip');
 
-    $('.reset-button').tooltip('enable');
+    resetButton.tooltip('enable');
 
     if (!tooltipAlreadyDisplayed) {
       setTimeout(() => {
-        $('.reset-button').tooltip('show');
+        resetButton.tooltip('show');
 
         setTimeout(() => {
-          $('.reset-button').tooltip('hide');
+          resetButton.tooltip('hide');
           localStorage.setItem('hideTextEditorResetTooltip', 'true');
         }, 7000);
       }, 500); // wait for layout shifts
