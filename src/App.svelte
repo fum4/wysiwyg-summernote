@@ -2,24 +2,15 @@
   import { onDestroy, onMount } from 'svelte';
   import DOMPurify from 'isomorphic-dompurify';
 
-  import { initializeCef, getContentFromHost, sendContentToHost } from './cefUtils';
-
-  const defaultContent = '<div style="text-align: left;"><br /></div>'; // TODO: check <br />
-
-  function showHelperTooltip() {
-    window.$('.reset-button').tooltip('enable');
-
-    if (!localStorage.getItem('hideTextEditorResetTooltip')) {
-      setTimeout(() => {
-        window.$('.reset-button').tooltip('show');
-
-        setTimeout(() => {
-          window.$('.reset-button').tooltip('hide');
-          localStorage.setItem('hideTextEditorResetTooltip', 'true');
-        }, 7000);
-      }, 500); // wait for layout shifts
-    }
-  }
+  import {
+    summernote,
+    saveDraft,
+    onEditorInit,
+    clearEditor,
+    getEditorContent,
+    showEditorTooltip
+  } from './editorUtils';
+  import { initializeCef, sendContentToHost } from './cefUtils';
 
   // function convertImageToBase64(img: HTMLImageElement) {
   //   const canvas = document.createElement('canvas');
@@ -44,56 +35,17 @@
   //   });
   // }
 
-  function saveDraft() {
-    try {
-      localStorage.setItem('textEditorDraft', getEditorContent());
-    } catch(e) {}
-  }
+  let saveError = false;
 
-  function clearDraft() {
+  async function initializeApp(showTooltip = true) {
     try {
-      localStorage.removeItem('textEditorDraft');
-    } catch(e) {}
-  }
-
-  function getDraft() {
-    try {
-      return localStorage.getItem('textEditorDraft');
+      await initializeCef();
     } catch(e) {
-      return null;
-    }
-  }
-
-  async function getInitialContent() {
-    try {
-      const hostContent = await getContentFromHost();
-
-      if (hostContent) {
-        return hostContent;
-      }
-    } catch(e) {
-      console.error('Failed to retrieve content from host', e);
+      console.info('Cef not initialized. Running in isolation from host');
+      console.error(e);
     }
 
-    return getDraft() || defaultContent;
-  }
-
-  function getEditorContent() {
-    return getEditorHTMLNode().innerHTML;
-  }
-
-  function getEditorHTMLNode(): HTMLDivElement {
-    return document.querySelector('[contenteditable="true"]');
-  }
-
-  function clearEditor() {
-    getEditorHTMLNode().innerHTML = defaultContent;
-    getEditorHTMLNode().focus();
-    clearDraft();
-  }
-
-  function initializeEditor() {
-    window.$('#summernote').summernote({
+    summernote({
       height: 500,
       focus: true,
       dialogsFade: true,
@@ -102,15 +54,24 @@
         theme: 'monokai'
       },
       callbacks: {
-        onInit: async() => {
-          getEditorHTMLNode().innerHTML = '';
-
-          const initialContent = await getInitialContent();
-
-          window.$('#summernote').summernote('pasteHTML', initialContent);
-        }
+        onInit: onEditorInit,
+        onChange: () => saveError = false,
       }
     });
+
+    showTooltip && showEditorTooltip();
+
+    window.addEventListener('beforeunload', saveDraft);
+  }
+
+  // Reinitialize app in case of unexpected behaviour
+  async function reinitializeApp() {
+    clearEditor();
+
+    await initializeApp(false);
+
+    // The editor won't call `onInit` if already initialized
+    onEditorInit();
   }
 
   async function exportAsHTML(ev) {
@@ -127,27 +88,13 @@
         clearEditor();
       } catch(e) {
         console.error('Failed to send content to host.', e);
+        saveError = true;
       }
     }
   }
 
-  onMount(async() => {
-    try {
-      await initializeCef();
-    } catch(e) {
-      console.info('Cef not initialized. Running in isolation from host');
-      console.error(e);
-    }
-
-    initializeEditor();
-    showHelperTooltip();
-
-    window.onbeforeunload = saveDraft;
-  });
-
-  onDestroy(() => {
-    window.onbeforeunload = undefined;
-  });
+  onMount(initializeApp);
+  onDestroy(() => window.removeEventListener('beforeunload', saveDraft));
 </script>
 
 <main>
@@ -159,25 +106,32 @@
 
   <form method="post" on:submit={exportAsHTML}>
     <textarea id="summernote" name="editordata"></textarea>
-    <div class="action-buttons">
-      <button
-        type="button"
-        class="reset-button btn btn-outline-secondary"
-        data-toggle="tooltip"
-        data-offset="0,5px"
-        data-placement="left"
-        data-fallbackPlacement="top"
-        title="If you encounter difficulties try resetting the editor"
-        on:click={clearEditor}
-      >
-        Reset
-      </button>
-      <button
-        type="submit"
-        class="submit-button btn btn-primary"
-      >
-        OK
-      </button>
+    <div class="bottom-section">
+      <div class="error">
+        {#if saveError}
+          <p class="mb-0 text-danger">An error occurred while saving the document</p>
+        {/if}
+      </div>
+      <div class="action-buttons">
+        <button
+          type="button"
+          class="reset-button btn btn-outline-secondary"
+          data-toggle="tooltip"
+          data-offset="0,5px"
+          data-placement="left"
+          data-fallbackPlacement="top"
+          title="If you encounter difficulties try resetting the editor"
+          on:click={reinitializeApp}
+        >
+          Reset
+        </button>
+        <button
+          type="submit"
+          class="submit-button btn btn-primary"
+        >
+          OK
+        </button>
+      </div>
     </div>
   </form>
 </main>

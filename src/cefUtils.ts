@@ -3,8 +3,8 @@ declare var CefSharp: {
 };
 
 declare var boundAsync: {
-    sendTextEditorContent(content: string): Promise<void>;
     getTextEditorContent(): Promise<string>;
+    saveTextEditorContent(content: string): Promise<void>;
 };
 
 let cefInitialized = false;
@@ -27,18 +27,18 @@ export async function initializeCef() {
     cefInitialized = true;
 }
 
-export async function sendContentToHost(content: string) {
-    if (!cefInitialized) {
-        throw new Error('Cef not initialized');
-    }
-
-    return boundAsync.sendTextEditorContent(content);
-}
-
 export async function getContentFromHost() {
     if (!cefInitialized) {
         throw new Error('Cef not initialized');
     }
 
     return boundAsync.getTextEditorContent();
+}
+
+export async function sendContentToHost(content: string) {
+    if (!cefInitialized) {
+        throw new Error('Cef not initialized');
+    }
+
+    return boundAsync.saveTextEditorContent(content);
 }
