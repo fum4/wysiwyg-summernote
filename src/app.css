@@ -123,6 +123,7 @@ button:focus-visible {
   position: absolute;
   display: flex;
   flex-direction: row;
+  align-items: flex-end;
   justify-content: space-between;
   align-items: center;
   bottom: 11px;
