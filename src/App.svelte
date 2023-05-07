@@ -2,7 +2,9 @@
   import { onDestroy, onMount } from 'svelte';
   import DOMPurify from 'isomorphic-dompurify';
 
-  const defaultContent = '<div style="text-align: left;"><br></div>';
+  import { initializeCef, getContentFromHost, sendContentToHost } from './cefUtils';
+
+  const defaultContent = '<div style="text-align: left;"><br /></div>'; // TODO: check <br />
 
   function showHelperTooltip() {
     window.$('.reset-button').tooltip('enable');
@@ -32,7 +34,7 @@
   //   img.src = canvas.toDataURL('image/png');
   // }
   //
-  // function convertAllImagesToBase64() {
+  // function convertImagesToBase64() {
   //   const images = getEditorHTMLNode().querySelectorAll('img');
   //
   //   images.forEach((img) => {
@@ -62,6 +64,20 @@
     }
   }
 
+  async function getInitialContent() {
+    try {
+      const hostContent = await getContentFromHost();
+
+      if (hostContent) {
+        return hostContent;
+      }
+    } catch(e) {
+      console.error('Failed to retrieve content from host', e);
+    }
+
+    return getDraft() || defaultContent;
+  }
+
   function getEditorContent() {
     return getEditorHTMLNode().innerHTML;
   }
@@ -86,37 +102,43 @@
         theme: 'monokai'
       },
       callbacks: {
-        onInit: () => {
+        onInit: async() => {
           getEditorHTMLNode().innerHTML = '';
 
-          const draft = getDraft();
+          const initialContent = await getInitialContent();
 
-          window.$('#summernote').summernote(
-            'pasteHTML',
-            draft || defaultContent
-          );
+          window.$('#summernote').summernote('pasteHTML', initialContent);
         }
       }
     });
   }
 
-  function exportAsHTML(ev) {
+  async function exportAsHTML(ev) {
     ev.preventDefault();
-    // convertAllImagesToBase64();
+    // convertImagesToBase64();
 
     const content = getEditorContent();
 
     if (content) {
       const sanitizedContent = DOMPurify.sanitize(content);
 
-      // TODO
-      console.log('Saving...', sanitizedContent);
-
-      clearEditor();
+      try {
+        await sendContentToHost(sanitizedContent);
+        clearEditor();
+      } catch(e) {
+        console.error('Failed to send content to host.', e);
+      }
     }
   }
 
-  onMount(() => {
+  onMount(async() => {
+    try {
+      await initializeCef();
+    } catch(e) {
+      console.info('Cef not initialized. Running in isolation from host');
+      console.error(e);
+    }
+
     initializeEditor();
     showHelperTooltip();
 

@@ -5,6 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="89f74bc2-3478-4a7f-948d-f389eed6a92b" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/cefUtils.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/App.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.svelte" afterDir="false" />
     </list>
@@ -25,24 +26,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/fum4/_work/_rinkt/wysiwyg-text-editor-summernote/public&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;/usr/local/lib/node_modules/prettier&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;/Users/fum4/_work/_rinkt/wysiwyg-text-editor-summernote/node_modules/typescript/lib&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "/Users/fum4/_work/_rinkt/wysiwyg-text-editor-summernote/src",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "prettierjs.PrettierConfiguration.Package": "/usr/local/lib/node_modules/prettier",
+    "ts.external.directory.path": "/Users/fum4/_work/_rinkt/wysiwyg-text-editor-summernote/node_modules/typescript/lib",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src" />
       <recent name="$PROJECT_DIR$/public" />
     </key>
   </component>
@@ -61,7 +63,7 @@
       <workItem from="1682528145745" duration="523000" />
       <workItem from="1682607525739" duration="681000" />
       <workItem from="1682982827368" duration="24026000" />
-      <workItem from="1683099609389" duration="3637000" />
+      <workItem from="1683099609389" duration="5080000" />
     </task>
     <servers />
   </component>
