@@ -1,2 +1,2 @@
-# wysiwyg-text-editor-summernote
- Rich Text Editor built with Summernote
+# wysiwyg-text-editor-summernote-svelte
+ WYSIWYG Rich Text Editor built with Summernote
