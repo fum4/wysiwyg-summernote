@@ -22,23 +22,15 @@ async function getInitialContent() {
 }
 
 function getDraft() {
-  try {
-    return localStorage.getItem('textEditorDraft');
-  } catch(e) {
-    return null;
-  }
+  return localStorage.getItem('textEditorDraft');
 }
 
 function clearDraft() {
-  try {
-    localStorage.removeItem('textEditorDraft');
-  } catch(e) {}
+  localStorage.removeItem('textEditorDraft');
 }
 
 export function saveDraft() {
-  try {
-    localStorage.setItem('textEditorDraft', getEditorContent());
-  } catch(e) {}
+  localStorage.setItem('textEditorDraft', getEditorContent());
 }
 
 function getEditorHTMLNode(): HTMLDivElement {
@@ -65,22 +57,20 @@ export function clearEditor() {
 }
 
 export function showEditorTooltip() {
-  try {
-    // @ts-ignore
-    const resetButton = window.$('.reset-button');
-    const tooltipAlreadyDisplayed = localStorage.getItem('hideTextEditorResetTooltip');
+  // @ts-ignore
+  const resetButton = window.$('.reset-button');
+  const tooltipAlreadyDisplayed = localStorage.getItem('hideTextEditorResetTooltip');
 
-    resetButton.tooltip('enable');
+  resetButton.tooltip('enable');
 
-    if (!tooltipAlreadyDisplayed) {
+  if (!tooltipAlreadyDisplayed) {
+    setTimeout(() => {
+      resetButton.tooltip('show');
+
       setTimeout(() => {
-        resetButton.tooltip('show');
-
-        setTimeout(() => {
-          resetButton.tooltip('hide');
-          localStorage.setItem('hideTextEditorResetTooltip', 'true');
-        }, 7000);
-      }, 500); // wait for layout shifts
-    }
-  } catch(e) {}
+        resetButton.tooltip('hide');
+        localStorage.setItem('hideTextEditorResetTooltip', 'true');
+      }, 7000);
+    }, 500); // wait for layout shifts
+  }
 }
